@@ -1,0 +1,6 @@
+build/
+dist/
+dev-dist/
+node_modules/
+*.d.ts
+!.vitepress/dist/

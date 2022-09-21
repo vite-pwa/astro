@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "types": [
+      "vite-plugin-pwa/client",
+      "astro/client"
+    ]
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test"
+  ]
+}
