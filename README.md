@@ -64,7 +64,7 @@ import AstroPWA from '@vite-pwa/astro'
 
 // https://astro.build/config
 export default defineConfig({
-    integrations: [AstroPWA()]
+  integrations: [AstroPWA()]
 })
 ```
 Read the [📖 documentation](https://vite-plugin-pwa.netlify.app/guide/) for a complete guide on how to configure and use
