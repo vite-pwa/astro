@@ -29,7 +29,7 @@ console.log(pwaInfo);
     }
     </style>
     { pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
-    { pwaInfo && pwaInfo.registerSW?.scriptTag && <script is:inline></script> }
+    { pwaInfo && pwaInfo.registerSW?.scriptTag && <Fragment set:html={pwaInfo.webManifest.scriptTag} /> }
   </head>
   <body>
     <main>
