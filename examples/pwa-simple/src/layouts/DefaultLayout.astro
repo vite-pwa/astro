@@ -9,7 +9,6 @@ export interface Props {
 const buildDate = __DATE__;
 
 const { title } = Astro.props as Props;
-console.log(pwaInfo);
 ---
 
 <html lang="en">
@@ -28,8 +27,8 @@ console.log(pwaInfo);
         text-align: center;
     }
     </style>
+    <script src="/src/pwa.ts"></script>
     { pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
-    { pwaInfo && pwaInfo.registerSW?.scriptTag && <Fragment set:html={pwaInfo.webManifest.scriptTag} /> }
   </head>
   <body>
     <main>

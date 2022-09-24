@@ -5,6 +5,29 @@ import type { AstroConfig, AstroIntegration, RouteData } from 'astro'
 import type { Plugin } from 'vite'
 import type { ManifestEntry, ManifestTransform } from 'workbox-build'
 
+export default function (options: Partial<VitePWAOptions> = {}): AstroIntegration {
+  let pwaPlugin: Plugin | undefined
+  let data: RouteData[] | undefined
+  const enableManifestTransform: EnableManifestTransform = () => {
+    return data!
+  }
+  return {
+    name: '@vite-pwa/astro-integration',
+    hooks: {
+      'astro:config:setup': ({ config, updateConfig }) => {
+        updateConfig({ vite: getViteConfiguration(config, options, enableManifestTransform) })
+      },
+      'astro:config:done': ({ config }) => {
+        pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
+      },
+      'astro:build:done': async ({ routes }) => {
+        data = routes
+        await regeneratePWA(pwaPlugin)
+      },
+    },
+  }
+}
+
 type EnableManifestTransform = () => RouteData[]
 
 function buildManifestEntry(
@@ -79,7 +102,11 @@ function createManifestTransform(enableManifestTransform: EnableManifestTransfor
   }
 }
 
-function getViteConfiguration(config: AstroConfig, options: Partial<VitePWAOptions>, enableManifestTransform: EnableManifestTransform) {
+function getViteConfiguration(
+  config: AstroConfig,
+  options: Partial<VitePWAOptions>,
+  enableManifestTransform: EnableManifestTransform,
+) {
   // @ts-expect-error TypeScript doesn't handle flattening Vite's plugin type properly
   const plugin = config.vite?.plugins?.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')
   if (plugin)
@@ -131,28 +158,5 @@ async function regeneratePWA(
   if (api && !api.disabled) {
     // regenerate the sw: there is no need to generate the webmanifest again
     await api.generateSW()
-  }
-}
-
-export default function (options: Partial<VitePWAOptions> = {}): AstroIntegration {
-  let pwaPlugin: Plugin | undefined
-  let data: RouteData[] | undefined
-  const enableManifestTransform: EnableManifestTransform = () => {
-    return data!
-  }
-  return {
-    name: '@vite-pwa/astro-integration',
-    hooks: {
-      'astro:config:setup': ({ config, updateConfig }) => {
-        updateConfig({ vite: getViteConfiguration(config, options, enableManifestTransform) })
-      },
-      'astro:config:done': ({ config }) => {
-        pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
-      },
-      'astro:build:done': async ({ routes }) => {
-        data = routes
-        await regeneratePWA(pwaPlugin)
-      },
-    },
   }
 }
