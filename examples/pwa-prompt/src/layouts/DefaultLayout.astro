@@ -1,4 +1,5 @@
 ---
+import ReloadPrompt from '../ReloadPrompt.astro';
 import { pwaInfo } from 'virtual:pwa-info';
 
 export interface Props {
@@ -29,7 +30,6 @@ console.log(pwaInfo);
     }
     </style>
     { pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
-    { pwaInfo && pwaInfo.registerSW?.scriptTag && <Fragment set:html={pwaInfo.webManifest.scriptTag} /> }
   </head>
   <body>
     <main>
@@ -40,5 +40,6 @@ console.log(pwaInfo);
     <footer>
         Built at: { buildDate }
     </footer>
+    <ReloadPrompt /
   </body>
 </html>

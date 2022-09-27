@@ -15,10 +15,9 @@ export default defineConfig({
       base: '/',
       scope: '/',
       includeAssets: ['favicon.svg'],
-      registerType: 'autoUpdate',
       manifest: {
-        name: 'VitePress PWA',
-        short_name: 'VitePressPWA',
+        name: 'Astro PWA',
+        short_name: 'Astro PWA',
         theme_color: '#ffffff',
         icons: [
           {
