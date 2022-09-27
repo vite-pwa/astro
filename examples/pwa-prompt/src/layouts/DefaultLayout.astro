@@ -1,5 +1,5 @@
 ---
-import ReloadPrompt from '../ReloadPrompt.astro';
+import ReloadPrompt from '../components/ReloadPrompt.astro';
 import { pwaInfo } from 'virtual:pwa-info';
 
 export interface Props {
@@ -10,7 +10,6 @@ export interface Props {
 const buildDate = __DATE__;
 
 const { title } = Astro.props as Props;
-console.log(pwaInfo);
 ---
 
 <html lang="en">
