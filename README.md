@@ -1,5 +1,5 @@
 <p align='center'>
-<img src='https://vite-plugin-pwa.netlify.app/banner_light.svg' alt="@vite-pwa/vitepress - Zero-config PWA for Astro"><br>
+<img src='./hero.png' alt="@vite-pwa/astro - Zero-config PWA for Astro"><br>
 Zero-config PWA Plugin for Astro
 </p>
 
@@ -72,7 +72,7 @@ this plugin.
 
 ## 👀 Full config
 
-Check out the type declaration [src/types.ts](./src/types.ts) and the following links for more details.
+Check out the following links for more details:
 
 - [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest)
 - [Workbox](https://developers.google.com/web/tools/workbox)
