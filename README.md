@@ -4,18 +4,18 @@ Zero-config PWA Integration for Astro
 </p>
 
 <p align='center'>
-<a href='https://www.npmjs.com/package/vite-plugin-pwa' target="__blank">
-<img src='https://img.shields.io/npm/v/vite-plugin-pwa?color=33A6B8&label=' alt="NPM version">
+<a href='https://www.npmjs.com/package/@vite-pwa/astro' target="__blank">
+<img src='https://img.shields.io/npm/v/@vite-pwa/astro?color=33A6B8&label=' alt="NPM version">
 </a>
-<a href="https://www.npmjs.com/package/vite-plugin-pwa" target="__blank">
-    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/vite-plugin-pwa?color=476582&label=">
+<a href="https://www.npmjs.com/package/@vite-pwa/astro" target="__blank">
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@vite-pwa/astro?color=476582&label=">
 </a>
 <a href="https://vite-pwa-org.netlify.app/frameworks/astro" target="__blank">
     <img src="https://img.shields.io/static/v1?label=&message=docs%20%26%20guides&color=2e859c" alt="Docs & Guides">
 </a>
 <br>
-<a href="https://github.com/antfu/vite-plugin-pwa" target="__blank">
-<img alt="GitHub stars" src="https://img.shields.io/github/stars/antfu/vite-plugin-pwa?style=social">
+<a href="https://github.com/vite-pwa/astro" target="__blank">
+<img alt="GitHub stars" src="https://img.shields.io/github/stars/vite-pwa/astro?style=social">
 </a>
 </p>
 
@@ -54,6 +54,8 @@ pnpm add @vite-pwa/astro -D
 ```
 
 ## 🦄 Usage
+
+> Requires Vite 3.1.0+
 
 Add `@vite-pwa/astro` integration to `astro.config.mjs` and configure it:
 
