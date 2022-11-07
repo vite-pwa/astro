@@ -43,7 +43,7 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
-        navigateFallback: '/',
+        navigateFallback: '/404',
       },
     }),
   ],
