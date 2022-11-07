@@ -43,6 +43,8 @@ Zero-config PWA Integration for Astro
 
 ## 📦 Install
 
+> Requires Vite 3.1.0+
+
 ```bash
 npm i @vite-pwa/astro -D 
 
@@ -54,8 +56,6 @@ pnpm add @vite-pwa/astro -D
 ```
 
 ## 🦄 Usage
-
-> Requires Vite 3.1.0+
 
 Add `@vite-pwa/astro` integration to `astro.config.mjs` and configure it:
 
