@@ -1,15 +1,14 @@
-import crypto from 'crypto'
-import fs from 'fs'
 import { VitePWA, type VitePWAOptions, type VitePluginPWAAPI } from 'vite-plugin-pwa'
-import type { AstroConfig, AstroIntegration, RouteData } from 'astro'
+import type { AstroConfig, AstroIntegration } from 'astro'
 import type { Plugin } from 'vite'
-import type { ManifestEntry, ManifestTransform } from 'workbox-build'
+import type { ManifestTransform } from 'workbox-build'
 
 export default function (options: Partial<VitePWAOptions> = {}): AstroIntegration {
   let pwaPlugin: Plugin | undefined
-  let data: RouteData[] | undefined
+  let trailingSlash: 'never' | 'always' | 'ignore' = 'ignore'
+  let doBuild = false
   const enableManifestTransform: EnableManifestTransform = () => {
-    return data!
+    return { doBuild, trailingSlash }
   }
   return {
     name: '@vite-pwa/astro-integration',
@@ -18,87 +17,45 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
         updateConfig({ vite: getViteConfiguration(config, options, enableManifestTransform) })
       },
       'astro:config:done': ({ config }) => {
+        trailingSlash = config.trailingSlash
         pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
       },
-      'astro:build:done': async ({ routes }) => {
-        data = routes
+      'astro:build:done': async () => {
+        doBuild = true
         await regeneratePWA(pwaPlugin)
       },
     },
   }
 }
 
-type EnableManifestTransform = () => RouteData[]
-
-function buildManifestEntry(
-  url: string,
-  path: URL,
-): Promise<ManifestEntry> {
-  return new Promise((resolve, reject) => {
-    const cHash = crypto.createHash('MD5')
-    const stream = fs.createReadStream(path)
-    stream.on('error', (err) => {
-      reject(err)
-    })
-    stream.on('data', (chunk) => {
-      cHash.update(chunk)
-    })
-    stream.on('end', () => {
-      return resolve({
-        url,
-        revision: `${cHash.digest('hex')}`,
-      })
-    })
-  })
-}
-
-async function buildManifestEntryTransform(
-  ssgUrl: string,
-  path: URL,
-): Promise<ManifestEntry & { size: number }> {
-  const [size, { url, revision }] = await Promise.all([
-    new Promise<number>((resolve, reject) => {
-      fs.lstat(path, (err, stats) => {
-        if (err)
-          reject(err)
-        else
-          resolve(stats.size)
-      })
-    }),
-    buildManifestEntry(ssgUrl, path),
-  ])
-  return { url, revision, size }
-}
-
-function isStatic(route: RouteData) {
-  if (!route.segments)
-    return true
-
-  for (let i = 0; i < route.segments.length; i++) {
-    for (let j = 0; j < route.segments[i].length; j++) {
-      if (route.segments[i][j].dynamic)
-        return false
-    }
-  }
-
-  return true
+type EnableManifestTransform = () => {
+  doBuild: boolean
+  trailingSlash: 'never' | 'always' | 'ignore'
 }
 
 function createManifestTransform(enableManifestTransform: EnableManifestTransform): ManifestTransform {
   return async (entries) => {
-    const pages = enableManifestTransform()
-    if (pages) {
-      const manifest = entries.filter(e => !e.url.endsWith('.html'))
-      const addRoutes = await Promise.all(pages.filter(
-        r => r.type === 'page' && r.pathname && r.distURL && isStatic(r),
-      ).map((r) => {
-        return buildManifestEntryTransform(r.pathname!, r.distURL!)
-      }))
-      manifest.push(...addRoutes)
-      return { manifest }
-    }
+    const { doBuild, trailingSlash } = enableManifestTransform()
+    if (!doBuild)
+      return { manifest: entries, warnings: [] }
 
-    return { manifest: entries }
+    entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
+      if (e.url === 'index.html') {
+        e.url = '/'
+      }
+      else if (e.url === '404.html') {
+        e.url = '/404'
+      }
+      else {
+        const url = e.url.slice(0, e.url.lastIndexOf('/'))
+        if (trailingSlash === 'always')
+          e.url = `${url}/`
+        else
+          e.url = url
+      }
+    })
+
+    return { manifest: entries, warnings: [] }
   }
 }
 
@@ -129,8 +86,9 @@ function getViteConfiguration(
       registerType,
       injectRegister,
     }
+
     if (!useWorkbox.navigateFallback)
-      useWorkbox.navigateFallback = config.vite?.base ?? '/'
+      useWorkbox.navigateFallback = config.base ?? config.vite?.base ?? '/'
 
     newOptions.workbox = useWorkbox
 
@@ -151,9 +109,7 @@ function getViteConfiguration(
   }
 }
 
-async function regeneratePWA(
-  pwaPlugin: Plugin | undefined,
-) {
+async function regeneratePWA(pwaPlugin: Plugin | undefined) {
   const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
   if (api && !api.disabled) {
     // regenerate the sw: there is no need to generate the webmanifest again

@@ -1,8 +1,8 @@
 {
   "name": "@vite-pwa/astro",
   "type": "module",
-  "version": "0.13.1",
-  "packageManager": "pnpm@7.12.2",
+  "version": "0.0.1",
+  "packageManager": "pnpm@7.14.2",
   "description": "Zero-config PWA for Astro",
   "author": "antfu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -40,21 +40,21 @@
     "build": "unbuild",
     "lint": "eslint .",
     "lint-fix": "nr lint --fix",
-    "prepublishOnly": "npm run build",
-    "release": "npx bumpp --push --tag --commit && npm publish"
+    "xprepublishOnly": "npm run build",
+    "xrelease": "npx bumpp --push --tag --commit && npm publish"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.27.0",
-    "@antfu/ni": "^0.18.2",
+    "@antfu/eslint-config": "^0.29.4",
+    "@antfu/ni": "^0.18.3",
     "@types/debug": "^4.1.7",
     "@types/workbox-build": "^5.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "astro": "^1.4.0",
-    "eslint": "^8.24.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "astro": "^1.6.3",
+    "eslint": "^8.27.0",
     "https-localhost": "^4.7.1",
     "typescript": "^4.8.4",
-    "unbuild": "^0.8.11",
-    "vite": "^3.1.4",
-    "vite-plugin-pwa": "^0.13.1"
+    "unbuild": "^0.9.4",
+    "vite": "^3.2.3",
+    "vite-plugin-pwa": "^0.13.3"
   }
 }
