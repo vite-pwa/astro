@@ -8,8 +8,9 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
   let trailingSlash: 'never' | 'always' | 'ignore' = 'ignore'
   let useDirectoryFormat = true
   let doBuild = false
+  let scope = '/'
   const enableManifestTransform: EnableManifestTransform = () => {
-    return { doBuild, useDirectoryFormat, trailingSlash }
+    return { doBuild, useDirectoryFormat, scope, trailingSlash }
   }
   return {
     name: '@vite-pwa/astro-integration',
@@ -21,6 +22,7 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
         trailingSlash = config.trailingSlash
         useDirectoryFormat = config.build.format === 'directory'
         pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
+        scope = config.base ?? config.vite.base ?? '/'
       },
       'astro:build:done': async () => {
         doBuild = true
@@ -32,30 +34,31 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
 
 type EnableManifestTransform = () => {
   doBuild: boolean
+  scope: string
   useDirectoryFormat: boolean
   trailingSlash: 'never' | 'always' | 'ignore'
 }
 
 function createManifestTransform(enableManifestTransform: EnableManifestTransform): ManifestTransform {
   return async (entries) => {
-    const { doBuild, trailingSlash, useDirectoryFormat } = enableManifestTransform()
+    const { doBuild, trailingSlash, scope, useDirectoryFormat } = enableManifestTransform()
     if (!doBuild || !useDirectoryFormat)
       return { manifest: entries, warnings: [] }
 
     // apply transformation only when using directory format
     entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
       if (e.url === 'index.html') {
-        e.url = '/'
+        e.url = scope
       }
       else if (e.url === '404.html') {
-        e.url = '/404'
+        e.url = `${scope}404`
       }
       else {
         const url = e.url.slice(0, e.url.lastIndexOf('/'))
         if (trailingSlash === 'always')
-          e.url = `${url}/`
+          e.url = `${scope}${url}/`
         else
-          e.url = url
+          e.url = `${scope}${url}`
       }
     })
 
