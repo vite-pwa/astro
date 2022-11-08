@@ -48,7 +48,7 @@ function createManifestTransform(enableManifestTransform: () => EnableManifestTr
     if (!doBuild)
       return { manifest: entries, warnings: [] }
 
-    // apply transformation only when using directory format
+    // apply transformation only when build enabled
     entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
       const url = e.url.startsWith('/') ? e.url.slice(1) : e.url
       if (url === 'index.html') {
