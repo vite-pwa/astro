@@ -3,14 +3,24 @@ import type { AstroConfig, AstroIntegration } from 'astro'
 import type { Plugin } from 'vite'
 import type { ManifestTransform } from 'workbox-build'
 
+interface EnableManifestTransform {
+  doBuild: boolean
+  scope: string
+  useDirectoryFormat: boolean
+  trailingSlash: 'never' | 'always' | 'ignore'
+}
+
 export default function (options: Partial<VitePWAOptions> = {}): AstroIntegration {
   let pwaPlugin: Plugin | undefined
-  let trailingSlash: 'never' | 'always' | 'ignore' = 'ignore'
-  let useDirectoryFormat = true
-  let doBuild = false
-  let scope = '/'
-  const enableManifestTransform: EnableManifestTransform = () => {
-    return { doBuild, useDirectoryFormat, scope, trailingSlash }
+  const ctx: EnableManifestTransform = {
+    doBuild: false,
+    scope: '/',
+    trailingSlash: 'ignore',
+    useDirectoryFormat: true,
+  }
+
+  const enableManifestTransform = (): EnableManifestTransform => {
+    return ctx
   }
   return {
     name: '@vite-pwa/astro-integration',
@@ -19,46 +29,40 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
         updateConfig({ vite: getViteConfiguration(config, options, enableManifestTransform) })
       },
       'astro:config:done': ({ config }) => {
-        scope = config.base ?? config.vite.base ?? '/'
-        trailingSlash = config.trailingSlash
-        useDirectoryFormat = config.build.format === 'directory'
+        ctx.scope = config.base ?? config.vite.base ?? '/'
+        ctx.trailingSlash = config.trailingSlash
+        ctx.useDirectoryFormat = config.build.format === 'directory'
         pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
       },
       'astro:build:done': async () => {
-        doBuild = true
+        ctx.doBuild = true
         await regeneratePWA(pwaPlugin)
       },
     },
   }
 }
 
-type EnableManifestTransform = () => {
-  doBuild: boolean
-  scope: string
-  useDirectoryFormat: boolean
-  trailingSlash: 'never' | 'always' | 'ignore'
-}
-
-function createManifestTransform(enableManifestTransform: EnableManifestTransform): ManifestTransform {
+function createManifestTransform(enableManifestTransform: () => EnableManifestTransform): ManifestTransform {
   return async (entries) => {
     const { doBuild, trailingSlash, scope, useDirectoryFormat } = enableManifestTransform()
-    if (!doBuild || !useDirectoryFormat)
+    if (!doBuild)
       return { manifest: entries, warnings: [] }
 
     // apply transformation only when using directory format
     entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
-      if (e.url === 'index.html') {
+      const url = e.url.startsWith('/') ? e.url.slice(1) : e.url
+      if (url === 'index.html') {
         e.url = scope
       }
-      else if (e.url === '404.html') {
-        e.url = `${scope}404`
-      }
       else {
-        const url = e.url.slice(0, e.url.lastIndexOf('/'))
+        const parts = url.split('/')
+        parts[parts.length - 1] = parts[parts.length - 1].replace(/\.html$/, '')
+        e.url = useDirectoryFormat
+          ? parts.length > 1 ? parts.slice(0, parts.length - 1).join('/') : parts[0]
+          : parts.join('/')
+
         if (trailingSlash === 'always')
-          e.url = `${scope}${url}/`
-        else
-          e.url = `${scope}${url}`
+          e.url += '/'
       }
     })
 
@@ -69,7 +73,7 @@ function createManifestTransform(enableManifestTransform: EnableManifestTransfor
 function getViteConfiguration(
   config: AstroConfig,
   options: Partial<VitePWAOptions>,
-  enableManifestTransform: EnableManifestTransform,
+  enableManifestTransform: () => EnableManifestTransform,
 ) {
   // @ts-expect-error TypeScript doesn't handle flattening Vite's plugin type properly
   const plugin = config.vite?.plugins?.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')
