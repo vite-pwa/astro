@@ -6,9 +6,10 @@ import type { ManifestTransform } from 'workbox-build'
 export default function (options: Partial<VitePWAOptions> = {}): AstroIntegration {
   let pwaPlugin: Plugin | undefined
   let trailingSlash: 'never' | 'always' | 'ignore' = 'ignore'
+  let useDirectoryFormat = true
   let doBuild = false
   const enableManifestTransform: EnableManifestTransform = () => {
-    return { doBuild, trailingSlash }
+    return { doBuild, useDirectoryFormat, trailingSlash }
   }
   return {
     name: '@vite-pwa/astro-integration',
@@ -18,6 +19,7 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
       },
       'astro:config:done': ({ config }) => {
         trailingSlash = config.trailingSlash
+        useDirectoryFormat = config.build.format === 'directory'
         pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
       },
       'astro:build:done': async () => {
@@ -30,15 +32,17 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
 
 type EnableManifestTransform = () => {
   doBuild: boolean
+  useDirectoryFormat: boolean
   trailingSlash: 'never' | 'always' | 'ignore'
 }
 
 function createManifestTransform(enableManifestTransform: EnableManifestTransform): ManifestTransform {
   return async (entries) => {
-    const { doBuild, trailingSlash } = enableManifestTransform()
-    if (!doBuild)
+    const { doBuild, trailingSlash, useDirectoryFormat } = enableManifestTransform()
+    if (!doBuild || !useDirectoryFormat)
       return { manifest: entries, warnings: [] }
 
+    // apply transformation only when using directory format
     entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
       if (e.url === 'index.html') {
         e.url = '/'
