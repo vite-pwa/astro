@@ -19,10 +19,10 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
         updateConfig({ vite: getViteConfiguration(config, options, enableManifestTransform) })
       },
       'astro:config:done': ({ config }) => {
+        scope = config.base ?? config.vite.base ?? '/'
         trailingSlash = config.trailingSlash
         useDirectoryFormat = config.build.format === 'directory'
         pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
-        scope = config.base ?? config.vite.base ?? '/'
       },
       'astro:build:done': async () => {
         doBuild = true
