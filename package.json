@@ -40,8 +40,8 @@
     "build": "unbuild",
     "lint": "eslint .",
     "lint-fix": "nr lint --fix",
-    "xprepublishOnly": "npm run build",
-    "xrelease": "npx bumpp --push --tag --commit && npm publish"
+    "prepublishOnly": "npm run build",
+    "release": "bumpp && npm publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.29.4",
@@ -50,6 +50,7 @@
     "@types/workbox-build": "^5.0.1",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "astro": "^1.6.3",
+    "bumpp": "^8.2.1",
     "eslint": "^8.27.0",
     "https-localhost": "^4.7.1",
     "typescript": "^4.8.4",
