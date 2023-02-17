@@ -33,7 +33,7 @@ type EnableManifestTransform = () => {
   trailingSlash: 'never' | 'always' | 'ignore'
 }
 
-function createManifestTransform(enableManifestTransform: EnableManifestTransform): ManifestTransform {
+function createManifestTransform(enableManifestTransform: EnableManifestTransform, config: AstroConfig): ManifestTransform {
   return async (entries) => {
     const { doBuild, trailingSlash } = enableManifestTransform()
     if (!doBuild)
@@ -41,10 +41,10 @@ function createManifestTransform(enableManifestTransform: EnableManifestTransfor
 
     entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
       if (e.url === 'index.html') {
-        e.url = '/'
+        e.url = config.base ?? config.vite?.base ?? '/'
       }
       else if (e.url === '404.html') {
-        e.url = '/404'
+        e.url = '404'
       }
       else {
         const url = e.url.slice(0, e.url.lastIndexOf('/'))
@@ -93,7 +93,7 @@ function getViteConfiguration(
     newOptions.workbox = useWorkbox
 
     newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
-    newOptions.workbox.manifestTransforms.push(createManifestTransform(enableManifestTransform))
+    newOptions.workbox.manifestTransforms.push(createManifestTransform(enableManifestTransform, config))
 
     return {
       plugins: [VitePWA(newOptions)],
@@ -102,7 +102,7 @@ function getViteConfiguration(
 
   options.injectManifest = options.injectManifest ?? {}
   options.injectManifest.manifestTransforms = injectManifest.manifestTransforms ?? []
-  options.injectManifest.manifestTransforms.push(createManifestTransform(enableManifestTransform))
+  options.injectManifest.manifestTransforms.push(createManifestTransform(enableManifestTransform, config))
 
   return {
     plugins: [VitePWA(options)],
