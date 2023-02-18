@@ -47,7 +47,9 @@ function createManifestTransform(enableManifestTransform: EnableManifestTransfor
         e.url = '/404'
       }
       else {
-        const url = e.url.slice(0, e.url.lastIndexOf('/'))
+        const url = e.url.includes('/')
+          ? e.url.slice(0, e.url.lastIndexOf('/'))
+          : e.url
         if (trailingSlash === 'always')
           e.url = `${url}/`
         else
