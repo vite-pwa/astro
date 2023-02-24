@@ -37,10 +37,11 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
           config, options,
           enableManifestTransform,
         )
+
         if (command === 'build')
-          plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
+          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
         else
-          plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
+          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
 
         updateConfig({ vite: { plugins } })
       },
