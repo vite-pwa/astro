@@ -118,6 +118,10 @@ function getViteConfiguration(
       // @ts-expect-error Vite's plugin type doesn't handle flatting properly
       plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
     }
+    else {
+      // @ts-expect-error Vite's plugin type doesn't handle flatting properly
+      plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
+    }
 
     return { plugins }
   }
@@ -130,6 +134,10 @@ function getViteConfiguration(
   if (build) {
     // @ts-expect-error Vite's plugin type doesn't handle flatting properly
     plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
+  }
+  else {
+    // @ts-expect-error Vite's plugin type doesn't handle flatting properly
+    plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
   }
 
   return { plugins }
