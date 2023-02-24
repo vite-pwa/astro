@@ -25,8 +25,14 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
   return {
     name: '@vite-pwa/astro-integration',
     hooks: {
-      'astro:config:setup': ({ config, updateConfig }) => {
-        updateConfig({ vite: getViteConfiguration(config, options, enableManifestTransform) })
+      'astro:config:setup': ({ command, config, updateConfig }) => {
+        updateConfig({
+          vite: getViteConfiguration(
+            command === 'build',
+            config, options,
+            enableManifestTransform,
+          ),
+        })
       },
       'astro:config:done': ({ config }) => {
         ctx.scope = config.base ?? config.vite.base ?? '/'
@@ -71,6 +77,7 @@ function createManifestTransform(enableManifestTransform: () => EnableManifestTr
 }
 
 function getViteConfiguration(
+  build: boolean,
   config: AstroConfig,
   options: Partial<VitePWAOptions>,
   enableManifestTransform: () => EnableManifestTransform,
@@ -106,18 +113,34 @@ function getViteConfiguration(
     newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
     newOptions.workbox.manifestTransforms.push(createManifestTransform(enableManifestTransform))
 
-    return {
-      plugins: [VitePWA(newOptions)],
+    let plugins = [VitePWA(newOptions)]
+    if (build) {
+      // @ts-expect-error Vite's plugin type doesn't handle flatting properly
+      plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
     }
+    else {
+      // @ts-expect-error Vite's plugin type doesn't handle flatting properly
+      plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
+    }
+
+    return { plugins }
   }
 
   options.injectManifest = options.injectManifest ?? {}
   options.injectManifest.manifestTransforms = injectManifest.manifestTransforms ?? []
   options.injectManifest.manifestTransforms.push(createManifestTransform(enableManifestTransform))
 
-  return {
-    plugins: [VitePWA(options)],
+  let plugins = [VitePWA(options)]
+  if (build) {
+    // @ts-expect-error Vite's plugin type doesn't handle flatting properly
+    plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
   }
+  else {
+    // @ts-expect-error Vite's plugin type doesn't handle flatting properly
+    plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
+  }
+
+  return { plugins }
 }
 
 async function regeneratePWA(pwaPlugin: Plugin | undefined) {
