@@ -4,6 +4,7 @@ import type { Plugin } from 'vite'
 import type { ManifestTransform } from 'workbox-build'
 
 interface EnableManifestTransform {
+  preview: boolean
   doBuild: boolean
   scope: string
   useDirectoryFormat: boolean
@@ -13,6 +14,7 @@ interface EnableManifestTransform {
 export default function (options: Partial<VitePWAOptions> = {}): AstroIntegration {
   let pwaPlugin: Plugin | undefined
   const ctx: EnableManifestTransform = {
+    preview: false,
     doBuild: false,
     scope: '/',
     trailingSlash: 'ignore',
@@ -26,21 +28,36 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
     name: '@vite-pwa/astro-integration',
     hooks: {
       'astro:config:setup': ({ command, config, updateConfig }) => {
-        updateConfig({
-          vite: getViteConfiguration(
-            command === 'build',
-            config, options,
-            enableManifestTransform,
-          ),
-        })
+        if (command === 'preview') {
+          ctx.preview = true
+          return
+        }
+
+        let plugins = getViteConfiguration(
+          config, options,
+          enableManifestTransform,
+        )
+
+        if (command === 'build')
+          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
+        else
+          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
+
+        updateConfig({ vite: { plugins } })
       },
       'astro:config:done': ({ config }) => {
+        if (ctx.preview)
+          return
+
         ctx.scope = config.base ?? config.vite.base ?? '/'
         ctx.trailingSlash = config.trailingSlash
         ctx.useDirectoryFormat = config.build.format === 'directory'
         pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
       },
       'astro:build:done': async () => {
+        if (ctx.preview)
+          return
+
         ctx.doBuild = true
         await regeneratePWA(pwaPlugin)
       },
@@ -77,7 +94,6 @@ function createManifestTransform(enableManifestTransform: () => EnableManifestTr
 }
 
 function getViteConfiguration(
-  build: boolean,
   config: AstroConfig,
   options: Partial<VitePWAOptions>,
   enableManifestTransform: () => EnableManifestTransform,
@@ -113,34 +129,14 @@ function getViteConfiguration(
     newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
     newOptions.workbox.manifestTransforms.push(createManifestTransform(enableManifestTransform))
 
-    let plugins = [VitePWA(newOptions)]
-    if (build) {
-      // @ts-expect-error Vite's plugin type doesn't handle flatting properly
-      plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
-    }
-    else {
-      // @ts-expect-error Vite's plugin type doesn't handle flatting properly
-      plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
-    }
-
-    return { plugins }
+    return VitePWA(newOptions)
   }
 
   options.injectManifest = options.injectManifest ?? {}
   options.injectManifest.manifestTransforms = injectManifest.manifestTransforms ?? []
   options.injectManifest.manifestTransforms.push(createManifestTransform(enableManifestTransform))
 
-  let plugins = [VitePWA(options)]
-  if (build) {
-    // @ts-expect-error Vite's plugin type doesn't handle flatting properly
-    plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')]
-  }
-  else {
-    // @ts-expect-error Vite's plugin type doesn't handle flatting properly
-    plugins = [...plugins.flat(Infinity).filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')]
-  }
-
-  return { plugins }
+  return VitePWA(options)
 }
 
 async function regeneratePWA(pwaPlugin: Plugin | undefined) {
