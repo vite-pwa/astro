@@ -39,11 +39,12 @@ export default defineConfig({
         ],
       },
       workbox: {
+        navigateFallback: '/404',
         globPatterns: ['**/*.{css,js,html,svg,png,ico,txt}'],
       },
       devOptions: {
         enabled: true,
-        navigateFallback: '/404',
+        navigateFallbackAllowlist: [/^\/404$/],
       },
     }),
   ],
