@@ -27,8 +27,8 @@ const { title } = Astro.props as Props;
         text-align: center;
     }
     </style>
-    <script src="/src/pwa.ts"></script>
     { pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
+    <script src="/src/pwa.ts"></script>
   </head>
   <body>
     <main>
