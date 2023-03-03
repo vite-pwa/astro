@@ -103,6 +103,9 @@ function getViteConfiguration(
   if (plugin)
     throw new Error('Remove the vite-plugin-pwa plugin from Vite Plugins entry in Astro config file, configure it via @vite-pwa/astro integration')
 
+  // icons are there when `astro:build:done` hook is called
+  options.includeManifestIcons = false
+
   const {
     strategies = 'generateSW',
     registerType = 'prompt',
