@@ -84,4 +84,4 @@ Check out the following links for more details:
 
 ## 📄 License
 
-MIT License © 2022-PRESENT [Anthony Fu](https://github.com/antfu)
+[MIT](./LICENSE) License &copy; 2022-PRESENT [Anthony Fu](https://github.com/antfu)
