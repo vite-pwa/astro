@@ -44,7 +44,7 @@
     "release": "bumpp && npm publish"
   },
   "peerDependencies": {
-    "astro": "^1.6.0 || ^2.0.0",
+    "astro": "^1.6.0 || ^2.0.0 || ^3.0.0",
     "vite-plugin-pwa": ">=0.16.3 <1"
   },
   "dependencies": {
