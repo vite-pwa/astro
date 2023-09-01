@@ -52,7 +52,7 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
         ctx.scope = config.base ?? config.vite.base ?? '/'
         ctx.trailingSlash = config.trailingSlash
         ctx.useDirectoryFormat = config.build.format === 'directory'
-        pwaPlugin = config.vite!.plugins!.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')!
+        pwaPlugin = config.vite!.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')!
       },
       'astro:build:done': async () => {
         if (ctx.preview)
@@ -98,8 +98,8 @@ function getViteConfiguration(
   options: Partial<VitePWAOptions>,
   enableManifestTransform: () => EnableManifestTransform,
 ) {
-  // @ts-expect-error TypeScript doesn't handle flattening Vite's plugin type properly
-  const plugin = config.vite?.plugins?.flat(Infinity).find(p => p.name === 'vite-plugin-pwa')
+  // @ts-expect-error TypeScript doesn't handle flattening Vite's plugin type properly (TS2589: Type instantiation is excessively deep and possibly infinite.)
+  const plugin = config.vite?.plugins?.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
   if (plugin)
     throw new Error('Remove the vite-plugin-pwa plugin from Vite Plugins entry in Astro config file, configure it via @vite-pwa/astro integration')
 
