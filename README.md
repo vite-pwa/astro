@@ -80,7 +80,7 @@ this plugin.
 | Example                 | Source                                                                                      | Playground                                                                                     |
 |-------------------------|---------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
 | `Auto Update PWA`       | [GitHub](https://github.com/vite-pwa/astro/tree/main/examples/pwa-simple)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-simple) |
-| `Prompt for Update PWA` | [GitHub](https://github.com/unplugin/unplugin-icons/tree/main/examples/prompt)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-prompt) |
+| `Prompt for Update PWA` | [GitHub](https://github.com/unplugin/unplugin-icons/tree/main/examples/pwa-prompt)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-prompt) |
 
 
 ## 👀 Full config
