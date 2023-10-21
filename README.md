@@ -75,6 +75,14 @@ export default defineConfig({
 Read the [📖 documentation](https://vite-pwa-org.netlify.app/frameworks/astro) for a complete guide on how to configure and use
 this plugin.
 
+## ⚡️ Examples
+
+| Example                 | Source                                                                                      | Playground                                                                                     |
+|-------------------------|---------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `Auto Update PWA`       | [GitHub](https://github.com/vite-pwa/astro/tree/main/examples/pwa-simple)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-simple) |
+| `Prompt for Update PWA` | [GitHub](https://github.com/unplugin/unplugin-icons/tree/main/examples/prompt)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-prompt) |
+
+
 ## 👀 Full config
 
 Check out the following links for more details:
