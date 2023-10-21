@@ -14,5 +14,9 @@
     "@vite-pwa/astro": "workspace:*",
     "astro": "^3.0.5",
     "workbox-window": "^7.0.0"
+  },
+  "stackblitz": {
+    "installDependencies": false,
+    "startCommand": "node .stackblitz.js && npm install && npm run dev"
   }
 }
