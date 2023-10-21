@@ -42,6 +42,10 @@ export default defineConfig({
       workbox: {
         navigateFallback: '/404',
         globPatterns: ['**/*.{css,js,html,svg,png,ico,txt}'],
+        /*manifestTransforms: [async (manifestEntries) => {
+          console.log('manifestEntries', manifestEntries)
+          return { manifest: manifestEntries, warnings: [] }
+        }],*/
       },
       devOptions: {
         enabled: true,

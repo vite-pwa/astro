@@ -33,8 +33,15 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
           return
         }
 
+        ctx.scope = config.base ?? config.vite.base ?? '/'
+        ctx.trailingSlash = config.trailingSlash
+        ctx.useDirectoryFormat = config.build.format === 'directory'
+
         let plugins = getViteConfiguration(
-          config, options,
+          config,
+          options,
+          ctx.useDirectoryFormat,
+          ctx.trailingSlash,
           enableManifestTransform,
         )
 
@@ -49,9 +56,6 @@ export default function (options: Partial<VitePWAOptions> = {}): AstroIntegratio
         if (ctx.preview)
           return
 
-        ctx.scope = config.base ?? config.vite.base ?? '/'
-        ctx.trailingSlash = config.trailingSlash
-        ctx.useDirectoryFormat = config.build.format === 'directory'
         pwaPlugin = config.vite!.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')!
       },
       'astro:build:done': async () => {
@@ -71,23 +75,39 @@ function createManifestTransform(enableManifestTransform: () => EnableManifestTr
     if (!doBuild)
       return { manifest: entries, warnings: [] }
 
+    const additionalEntries: Parameters<ManifestTransform>[0] = []
+
     // apply transformation only when build enabled
     entries.filter(e => e && e.url.endsWith('.html')).forEach((e) => {
       const url = e.url.startsWith('/') ? e.url.slice(1) : e.url
       if (url === 'index.html') {
         e.url = scope
+        if (!e.url.endsWith('/'))
+          e.url += '/'
+      }
+      else if (url === '404.html') {
+        e.url = `404${trailingSlash === 'always' ? '/' : ''}`
       }
       else {
         const parts = url.split('/')
         parts[parts.length - 1] = parts[parts.length - 1].replace(/\.html$/, '')
-        e.url = useDirectoryFormat
+        let newUrl = useDirectoryFormat
           ? parts.length > 1 ? parts.slice(0, parts.length - 1).join('/') : parts[0]
           : parts.join('/')
 
         if (trailingSlash === 'always')
-          e.url += '/'
+          newUrl += '/'
+
+        additionalEntries.push({
+          revision: e.revision,
+          url: newUrl,
+          size: e.size,
+        })
       }
     })
+
+    if (additionalEntries.length)
+      entries.push(...additionalEntries)
 
     return { manifest: entries, warnings: [] }
   }
@@ -96,6 +116,8 @@ function createManifestTransform(enableManifestTransform: () => EnableManifestTr
 function getViteConfiguration(
   config: AstroConfig,
   options: Partial<VitePWAOptions>,
+  directoryFormat: boolean,
+  _trailingSlash: EnableManifestTransform['trailingSlash'],
   enableManifestTransform: () => EnableManifestTransform,
 ) {
   // @ts-expect-error TypeScript doesn't handle flattening Vite's plugin type properly (TS2589: Type instantiation is excessively deep and possibly infinite.)
@@ -127,17 +149,24 @@ function getViteConfiguration(
     if (!useWorkbox.navigateFallback)
       useWorkbox.navigateFallback = config.base ?? config.vite?.base ?? '/'
 
+    if (directoryFormat)
+      workbox.directoryIndex = 'index.html'
+
     newOptions.workbox = useWorkbox
 
-    newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
-    newOptions.workbox.manifestTransforms.push(createManifestTransform(enableManifestTransform))
+    if (!newOptions.workbox.manifestTransforms) {
+      newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
+      newOptions.workbox.manifestTransforms.push(createManifestTransform(enableManifestTransform))
+    }
 
     return VitePWA(newOptions)
   }
 
   options.injectManifest = options.injectManifest ?? {}
-  options.injectManifest.manifestTransforms = injectManifest.manifestTransforms ?? []
-  options.injectManifest.manifestTransforms.push(createManifestTransform(enableManifestTransform))
+  if (!options.injectManifest.manifestTransforms) {
+    options.injectManifest.manifestTransforms = injectManifest.manifestTransforms ?? []
+    options.injectManifest.manifestTransforms.push(createManifestTransform(enableManifestTransform))
+  }
 
   return VitePWA(options)
 }
