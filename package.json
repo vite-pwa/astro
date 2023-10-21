@@ -53,8 +53,8 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.41.0",
     "@antfu/ni": "^0.21.8",
-    "@types/node": "^20.8.7",
     "@types/debug": "^4.1.8",
+    "@types/node": "^20.8.7",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "astro": "^3.0.5",
     "bumpp": "^9.2.0",
