@@ -41,7 +41,7 @@ Zero-config PWA Integration for Astro
 - ✨ **Static assets handling**: configure static assets for offline support
 - 🐞 **Development Support**: debug your custom service worker logic as you develop your application
 - 🛠️ **Versatile**: integration with meta frameworks: [îles](https://github.com/ElMassimo/iles), [SvelteKit](https://github.com/sveltejs/kit), [VitePress](https://github.com/vuejs/vitepress), [Astro](https://github.com/withastro/astro), and [Nuxt 3](https://github.com/nuxt/nuxt)
-- 💥 PWA Assets Generator: generate all the PWA assets from a single command and a single source image
+- 💥 **PWA Assets Generator**: generate all the PWA assets from a single command and a single source image
 
 
 ## 📦 Install
@@ -74,6 +74,15 @@ export default defineConfig({
 ```
 Read the [📖 documentation](https://vite-pwa-org.netlify.app/frameworks/astro) for a complete guide on how to configure and use
 this plugin.
+
+## ⚡️ Examples
+
+You need to stop the dev server once started and then run `npm run build && npm run preview` to see the PWA in action.
+
+| Example                 | Source                                                                                     | Playground                                                                                     |
+|-------------------------|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `Auto Update PWA`       | [GitHub](https://github.com/vite-pwa/astro/tree/main/examples/pwa-simple)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-simple) |
+| `Prompt for Update PWA` | [GitHub](https://github.com/vite-pwa/astro/tree/main/examples/pwa-prompt)               | [Play Online](https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-prompt) |
 
 ## 👀 Full config
 
