@@ -9,7 +9,6 @@ interface EnableManifestTransform {
   scope: string
   useDirectoryFormat: boolean
   trailingSlash: 'never' | 'always' | 'ignore'
-  allowlist?: RegExp[]
 }
 
 export interface PwaOptions extends Partial<VitePWAOptions> {
