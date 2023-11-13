@@ -186,7 +186,8 @@ function getViteConfiguration(
       injectRegister,
     }
 
-    if (!useWorkbox.navigateFallback)
+    // the user may want to disable offline support
+    if (!('navigateFallback' in useWorkbox))
       useWorkbox.navigateFallback = config.base ?? config.vite?.base ?? '/'
 
     if (directoryFormat)
