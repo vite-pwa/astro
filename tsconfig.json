@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
     "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
+    "types": [
+      "vite-plugin-pwa/vanillajs",
+      "astro/client"
+    ],
     "esModuleInterop": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "skipLibCheck": true,
-    "types": [
-      "vite-plugin-pwa/client",
-      "astro/client"
-    ]
+    "skipLibCheck": true
   },
   "exclude": [
     "dist",
