@@ -39,7 +39,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        navigateFallback: '/q',
+        navigateFallback: '/',
         globPatterns: ['**/*.{css,js,html,svg,png,ico,txt}'],
       },
       devOptions: {

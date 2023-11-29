@@ -177,6 +177,12 @@ function getViteConfiguration(
     ...rest
   } = options
 
+  let assets = config.build.assets ?? '_astro/'
+  if (assets[0] === '/')
+    assets = assets.slice(1)
+  if (assets[assets.length - 1] !== '/')
+    assets += '/'
+
   if (strategies === 'generateSW') {
     const useWorkbox = { ...workbox }
     const newOptions: Partial<VitePWAOptions> = {
@@ -194,6 +200,9 @@ function getViteConfiguration(
       useWorkbox.directoryIndex = 'index.html'
 
     newOptions.workbox = useWorkbox
+    // Astro4/ Vite5 support: allow override dontCacheBustURLsMatching
+    if (!('dontCacheBustURLsMatching' in newOptions.workbox))
+      newOptions.workbox.dontCacheBustURLsMatching = new RegExp(assets)
 
     if (!newOptions.workbox.manifestTransforms) {
       newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
@@ -208,6 +217,10 @@ function getViteConfiguration(
   }
 
   options.injectManifest = options.injectManifest ?? {}
+  // Astro4/ Vite5 support: allow override dontCacheBustURLsMatching
+  if (!('dontCacheBustURLsMatching' in options.injectManifest))
+    options.injectManifest.dontCacheBustURLsMatching = new RegExp(assets)
+
   if (!options.injectManifest.manifestTransforms) {
     options.injectManifest.manifestTransforms = options.injectManifest.manifestTransforms ?? []
     options.injectManifest.manifestTransforms.push(
