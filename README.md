@@ -48,7 +48,7 @@ Zero-config PWA Integration for Astro
 
 > From v0.2.0, `@vite-pwa/astro` requires **Vite 5** and **Astro 4.0.0 or above**.
 
-> Using any version older than v0.3 requires Vite 3.1.0+.
+> Using any version older than v0.2.0 requires Vite 3.1.0+.
 
 ```bash
 npm i @vite-pwa/astro -D 
