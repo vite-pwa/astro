@@ -6,13 +6,13 @@ const cjsModule = resolve('dist/index.cjs')
 const cjsModuleContent = readFileSync(cjsModule, 'utf-8')
 writeFileSync(
   cjsModule,
-  cjsModuleContent.replace(
-    'module.exports = index;',
-    'exports.default = index;',
-  ),
+  cjsModuleContent
+    .replace('\'use strict\';', '\'use strict\';Object.defineProperty(exports, \'__esModule\', {value: true});')
+    .replace('module.exports = index;', 'exports.default = index;'),
   'utf-8',
 )
 
+/*
 // fix d.cts export default
 const ctsModule = resolve('dist/index.d.cts')
 const ctsModuleContent = readFileSync(ctsModule, 'utf-8')
@@ -24,3 +24,4 @@ writeFileSync(
   ),
   'utf-8',
 )
+*/
