@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { VitePWA, type VitePWAOptions, type VitePluginPWAAPI } from 'vite-plugin-pwa'
 import type { AstroConfig, AstroIntegration } from 'astro'
 import type { Plugin } from 'vite'
@@ -182,6 +183,14 @@ function getViteConfiguration(
     assets = assets.slice(1)
   if (assets[assets.length - 1] !== '/')
     assets += '/'
+
+  if (options.pwaAssets) {
+    options.pwaAssets.integration = {
+      baseUrl: config.base ?? config.vite.base ?? '/',
+      publicDir: fileURLToPath(config.publicDir),
+      outDir: fileURLToPath(config.outDir),
+    }
+  }
 
   if (strategies === 'generateSW') {
     const useWorkbox = { ...workbox }
