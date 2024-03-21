@@ -1,7 +1,7 @@
 {
   "name": "@vite-pwa/astro",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "packageManager": "pnpm@8.15.5",
   "description": "Zero-config PWA for Astro",
   "author": "antfu <anthonyfu117@hotmail.com>",
