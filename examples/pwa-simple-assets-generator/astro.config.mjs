@@ -8,6 +8,12 @@ export default defineConfig({
     define: {
       __DATE__: `'${new Date().toISOString()}'`,
     },
+    server: {
+      fs: {
+        // Allow serving files from hoisted root node_modules
+        allow: ['../..']
+      }
+    },
   },
   integrations: [
     AstroPWA({
