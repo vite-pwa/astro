@@ -13,7 +13,7 @@
   "devDependencies": {
     "@vite-pwa/astro": "workspace:*",
     "astro": "^4.0.1",
-    "workbox-window": "^7.0.0"
+    "workbox-window": "^7.1.0"
   },
   "stackblitz": {
     "installDependencies": false,
