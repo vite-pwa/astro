@@ -1,6 +1,6 @@
 <p align='center'>
 <img src='./hero.png' alt="@vite-pwa/astro - Zero-config PWA Integration for Astro"><br>
-Zero-config PWA Integration for Astro
+Zero-config PWA Integration for AstroX
 </p>
 
 <p align='center'>
