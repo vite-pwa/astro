@@ -10,7 +10,7 @@
   "homepage": "https://github.com/vite-pwa/astro#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vite-pwa/astro.git"
+    "url": "git+https://github.com/vite-pwa/astro.git"
   },
   "bugs": "https://github.com/vite-pwa/astro/issues",
   "keywords": [
