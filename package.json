@@ -25,7 +25,8 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -42,9 +43,9 @@
     "release": "bumpp && npm publish"
   },
   "peerDependencies": {
-    "@vite-pwa/assets-generator": "^0.2.4",
+    "@vite-pwa/assets-generator": "^0.2.6",
     "astro": "^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0",
-    "vite-plugin-pwa": ">=0.20.3 <1"
+    "vite-plugin-pwa": ">=0.20.4 <1"
   },
   "peerDependenciesMeta": {
     "@vite-pwa/assets-generator": {
@@ -52,7 +53,7 @@
     }
   },
   "dependencies": {
-    "vite-plugin-pwa": ">=0.20.3 <1"
+    "vite-plugin-pwa": ">=0.20.4 <1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.43.1",
