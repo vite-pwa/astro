@@ -2,7 +2,7 @@
   "name": "@vite-pwa/astro",
   "type": "module",
   "version": "0.4.3",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@9.15.0",
   "description": "Zero-config PWA for Astro",
   "author": "antfu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -23,20 +23,19 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "dist/index.cjs",
+  "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "*.d.ts"
+    "dist"
   ],
   "scripts": {
-    "build": "unbuild && esno scripts/postbuild.ts",
+    "build": "unbuild",
     "lint": "eslint .",
     "lint-fix": "nr lint --fix",
     "prepublishOnly": "npm run build",
@@ -44,8 +43,8 @@
   },
   "peerDependencies": {
     "@vite-pwa/assets-generator": "^0.2.6",
-    "astro": "^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0",
-    "vite-plugin-pwa": ">=0.20.5 <1"
+    "astro": "^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0",
+    "vite-plugin-pwa": ">=0.21.1 <1"
   },
   "peerDependenciesMeta": {
     "@vite-pwa/assets-generator": {
@@ -53,7 +52,7 @@
     }
   },
   "dependencies": {
-    "vite-plugin-pwa": ">=0.20.5 <1"
+    "vite-plugin-pwa": ">=0.21.1 <1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.43.1",
@@ -61,13 +60,19 @@
     "@types/debug": "^4.1.8",
     "@types/node": "^20.8.7",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "astro": "^4.0.1",
+    "astro": "^5.0.9",
     "bumpp": "^9.2.0",
     "eslint": "^8.54.0",
     "esno": "^4.0.0",
     "https-localhost": "^4.7.1",
-    "typescript": "^5.4.5",
-    "unbuild": "^2.0.0",
+    "typescript": "^5.7.2",
+    "unbuild": "^3.0.1",
     "vite": "^5.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "sharp": "0.32.6",
+      "sharp-ico": "0.1.5"
+    }
   }
 }
