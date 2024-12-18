@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
-import { VitePWA, type VitePWAOptions, type VitePluginPWAAPI } from 'vite-plugin-pwa'
+import { VitePWA } from 'vite-plugin-pwa'
+import type { VitePWAOptions, VitePluginPWAAPI } from 'vite-plugin-pwa'
 import type { AstroConfig, AstroIntegration } from 'astro'
 import type { Plugin } from 'vite'
 import type { ManifestTransform } from 'workbox-build'
@@ -63,7 +64,12 @@ export default function (options: PwaOptions = {}): AstroIntegration {
         else
           plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
 
-        updateConfig({ vite: { plugins } })
+        updateConfig({
+          vite: {
+            // @ts-expect-error TS2322: Type Plugin<any>[] is not assignable to type DeepPartial<PluginOption[] | undefined
+            plugins,
+          },
+        })
       },
       'astro:config:done': ({ config }) => {
         if (ctx.preview)
@@ -162,7 +168,7 @@ function getViteConfiguration(
   directoryFormat: boolean,
   enableManifestTransform: () => EnableManifestTransform,
 ) {
-  // @ts-expect-error TypeScript doesn't handle flattening Vite's plugin type properly (TS2589: Type instantiation is excessively deep and possibly infinite.)
+  // @ts-expect-error TS2589: Type instantiation is excessively deep and possibly infinite.
   const plugin = config.vite?.plugins?.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
   if (plugin)
     throw new Error('Remove the vite-plugin-pwa plugin from Vite Plugins entry in Astro config file, configure it via @vite-pwa/astro integration')

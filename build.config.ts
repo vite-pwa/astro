@@ -14,7 +14,6 @@ export default defineBuildConfig({
     'workbox-build',
   ],
   rollup: {
-    emitCJS: true,
     dts: {
       respectExternal: true,
     },
