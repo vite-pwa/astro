@@ -6,3 +6,4 @@ dev-dist
 .idea/
 # routify
 .routify/
+.astro/
