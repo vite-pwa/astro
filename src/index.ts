@@ -1,9 +1,9 @@
-import { fileURLToPath } from 'node:url'
-import { VitePWA } from 'vite-plugin-pwa'
-import type { VitePWAOptions, VitePluginPWAAPI } from 'vite-plugin-pwa'
 import type { AstroConfig, AstroIntegration } from 'astro'
 import type { Plugin } from 'vite'
+import type { VitePluginPWAAPI, VitePWAOptions } from 'vite-plugin-pwa'
 import type { ManifestTransform } from 'workbox-build'
+import { fileURLToPath } from 'node:url'
+import { VitePWA } from 'vite-plugin-pwa'
 
 interface EnableManifestTransform {
   preview: boolean
