@@ -1,13 +1,13 @@
 ---
-import { pwaInfo } from 'virtual:pwa-info';
-import { pwaAssetsHead } from 'virtual:pwa-assets/head';
+import { pwaAssetsHead } from 'virtual:pwa-assets/head'
+import { pwaInfo } from 'virtual:pwa-info'
 
 export interface Props {
-	title: string;
+  title: string
 }
 
 // replaced dynamically
-const buildDate = __DATE__;
+const buildDate = __DATE__
 
 const { title } = Astro.props as Props;
 ---

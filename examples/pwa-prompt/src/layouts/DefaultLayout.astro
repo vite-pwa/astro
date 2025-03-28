@@ -1,13 +1,13 @@
 ---
-import ReloadPrompt from '../components/ReloadPrompt.astro';
-import { pwaInfo } from 'virtual:pwa-info';
+import { pwaInfo } from 'virtual:pwa-info'
+ import ReloadPrompt from '../components/ReloadPrompt.astro'
 
 export interface Props {
-	title: string;
+  title: string
 }
 
 // replaced dynamically
-const buildDate = __DATE__;
+const buildDate = __DATE__
 
 const { title } = Astro.props as Props;
 ---

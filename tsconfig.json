@@ -7,10 +7,10 @@
       "vite-plugin-pwa/vanillajs",
       "astro/client"
     ],
-    "esModuleInterop": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "esModuleInterop": true,
     "skipLibCheck": true
   },
   "exclude": [

@@ -27,7 +27,6 @@ Zero-config PWA Integration for Astro
   </a>
 </p>
 
-
 ## 🚀 Features
 
 - 📖 [**Documentation & guides**](https://vite-pwa-org.netlify.app/)
@@ -44,7 +43,6 @@ Zero-config PWA Integration for Astro
 - 💥 **PWA Assets Generator**: generate all the PWA assets from a single command and a single source image
 - 🚀 **PWA Assets Integration**: serving, generating and injecting PWA Assets on the fly in your application
 
-
 ## 📦 Install
 
 > From v0.2.0, `@vite-pwa/astro` requires **Vite 5** and **Astro 4.0.0 or above**.
@@ -52,12 +50,12 @@ Zero-config PWA Integration for Astro
 > Using any version older than v0.2.0 requires Vite 3.1.0+.
 
 ```bash
-npm i @vite-pwa/astro -D 
+npm i @vite-pwa/astro -D
 
-# yarn 
+# yarn
 yarn add @vite-pwa/astro -D
 
-# pnpm 
+# pnpm
 pnpm add @vite-pwa/astro -D
 ```
 
@@ -67,8 +65,8 @@ Add `@vite-pwa/astro` integration to `astro.config.mjs` and configure it:
 
 ```ts
 // astro.config.mjs
-import { defineConfig } from 'astro/config'
 import AstroPWA from '@vite-pwa/astro'
+import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -82,33 +80,33 @@ this plugin.
 
 You need to stop the dev server once started and then run `npm run build && npm run preview` to see the PWA in action.
 <table>
-<thead>
-<tr>
-<th>Example</th>
-<th>Source</th>
-<th>Playground</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Auto Update PWA</code></td>
-<td><a href="https://github.com/vite-pwa/astro/tree/main/examples/pwa-simple">GitHub</a></td>
-<td>
-<a href="https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-simple" target="_blank" rel="noopener noreferrer">
-  <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" width="162" height="32">
-</a>
-</td>
-</tr>
-<tr>
-<td><code>Prompt for Update PWA</code></td>
-<td><a href="https://github.com/vite-pwa/astro/tree/main/examples/pwa-prompt">GitHub</a></td>
-<td>
-<a href="https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-prompt" target="_blank" rel="noopener noreferrer">
-  <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" width="162" height="32">
-</a>
-</td>    
-</tr>
-</tbody>
+    <thead>
+    <tr>
+    <th>Example</th>
+    <th>Source</th>
+    <th>Playground</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td><code>Auto Update PWA</code></td>
+    <td><a href="https://github.com/vite-pwa/astro/tree/main/examples/pwa-simple">GitHub</a></td>
+    <td>
+    <a href="https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-simple" target="_blank" rel="noopener noreferrer">
+      <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" width="162" height="32">
+    </a>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Prompt for Update PWA</code></td>
+    <td><a href="https://github.com/vite-pwa/astro/tree/main/examples/pwa-prompt">GitHub</a></td>
+    <td>
+    <a href="https://stackblitz.com/fork/github/vite-pwa/astro/tree/main/examples/pwa-prompt" target="_blank" rel="noopener noreferrer">
+      <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" width="162" height="32">
+    </a>
+    </td>
+    </tr>
+    </tbody>
 </table>
 
 ## 👀 Full config
@@ -117,7 +115,6 @@ Check out the following links for more details:
 
 - [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest)
 - [Workbox](https://developers.google.com/web/tools/workbox)
-
 
 ## 📄 License
 

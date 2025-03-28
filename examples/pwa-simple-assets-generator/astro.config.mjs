@@ -1,5 +1,5 @@
-import { defineConfig } from 'astro/config'
 import AstroPWA from '@vite-pwa/astro'
+import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,8 +11,8 @@ export default defineConfig({
     server: {
       fs: {
         // Allow serving files from hoisted root node_modules
-        allow: ['../..']
-      }
+        allow: ['../..'],
+      },
     },
   },
   integrations: [
@@ -40,7 +40,7 @@ export default defineConfig({
       },
       experimental: {
         directoryAndTrailingSlashHandler: true,
-      }
+      },
     }),
   ],
 })
