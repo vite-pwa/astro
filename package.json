@@ -42,9 +42,9 @@
     "release": "bumpp && npm publish"
   },
   "peerDependencies": {
-    "@vite-pwa/assets-generator": "^0.2.6",
+    "@vite-pwa/assets-generator": "^1.0.0",
     "astro": "^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0",
-    "vite-plugin-pwa": ">=0.21.2 <1"
+    "vite-plugin-pwa": "^1.0.0"
   },
   "peerDependenciesMeta": {
     "@vite-pwa/assets-generator": {
@@ -52,7 +52,7 @@
     }
   },
   "dependencies": {
-    "vite-plugin-pwa": ">=0.21.2 <1"
+    "vite-plugin-pwa": "^1.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
@@ -71,10 +71,6 @@
     "vite": "^5.0.0"
   },
   "pnpm": {
-    "overrides": {
-      "sharp": "0.32.6",
-      "sharp-ico": "0.1.5"
-    },
     "ignoredBuiltDependencies": [
       "esbuild"
     ],
