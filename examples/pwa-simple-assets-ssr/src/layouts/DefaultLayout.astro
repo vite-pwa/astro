@@ -1,0 +1,43 @@
+---
+import { pwaAssetsHead } from 'virtual:pwa-assets/head'
+import { pwaInfo } from 'virtual:pwa-info'
+
+export interface Props {
+  title: string
+}
+
+// replaced dynamically
+const buildDate = __DATE__
+
+const { title } = Astro.props as Props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <meta name="description" content={title}>
+    { pwaAssetsHead.themeColor && <meta name="theme-color" content={pwaAssetsHead.themeColor.content} /> }
+    { pwaAssetsHead.links.map(link => (
+        <link {...link} />
+    )) }
+    { pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
+    <script src="/src/pwa.ts"></script>
+    <style>
+      main, footer {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+        <article>
+            <slot />
+        </article>
+    </main>
+    <footer>
+        Built at: { buildDate }
+    </footer>
+  </body>
+</html>
