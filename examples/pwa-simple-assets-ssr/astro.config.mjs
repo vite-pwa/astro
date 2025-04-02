@@ -49,6 +49,12 @@ export default defineConfig({
               ignoreVary: true,
               ignoreSearch: true,
             },
+            cacheableResponse: {
+              statuses: [200],
+            },
+            expiration: {
+              maxEntries: 100,
+            },
             plugins: [{
               cachedResponseWillBeUsed: async (params) => {
                 // When handlerDidError is invoked, then we can prevent redirecting if there is an entry in the cache.
