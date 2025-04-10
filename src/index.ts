@@ -194,7 +194,7 @@ function getViteConfiguration(
     options.pwaAssets.integration = {
       baseUrl: config.base ?? config.vite.base ?? '/',
       publicDir: fileURLToPath(config.publicDir),
-      outDir: fileURLToPath(config.outDir),
+      outDir: fileURLToPath(config.adapter?.name ? config.build.client : config.outDir),
     }
   }
 
