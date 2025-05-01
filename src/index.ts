@@ -190,6 +190,11 @@ function getViteConfiguration(
   if (assets[assets.length - 1] !== '/')
     assets += '/'
 
+  const adapter = config.adapter?.name
+
+  if (adapter)
+    options.outDir = fileURLToPath(config.build.client)
+
   if (options.pwaAssets) {
     options.pwaAssets.integration = {
       baseUrl: config.base ?? config.vite.base ?? '/',
@@ -206,6 +211,10 @@ function getViteConfiguration(
       registerType,
       injectRegister,
     }
+
+    // the user may want to disable offline support
+    if (adapter && !('globDirectory' in useWorkbox))
+      useWorkbox.globDirectory = fileURLToPath(config.build.client)
 
     // the user may want to disable offline support
     if (!('navigateFallback' in useWorkbox))
@@ -232,6 +241,10 @@ function getViteConfiguration(
   }
 
   options.injectManifest = options.injectManifest ?? {}
+  // the user may want to disable offline support
+  if (adapter && !('globDirectory' in options.injectManifest))
+    options.injectManifest.globDirectory = fileURLToPath(config.build.client)
+
   // Astro4/ Vite5 support: allow override dontCacheBustURLsMatching
   if (!('dontCacheBustURLsMatching' in options.injectManifest))
     options.injectManifest.dontCacheBustURLsMatching = new RegExp(assets)
