@@ -176,6 +176,20 @@ function getViteConfiguration(
   // icons are there when `astro:build:done` hook is called
   options.includeManifestIcons = false
 
+  const adapter = config.adapter?.name
+
+  if (adapter) {
+    options.outDir = fileURLToPath(config.build.client)
+  }
+
+  if (options.pwaAssets) {
+    options.pwaAssets.integration = {
+      baseUrl: config.base ?? config.vite.base ?? '/',
+      publicDir: fileURLToPath(config.publicDir),
+      outDir: adapter ? options.outDir : fileURLToPath(config.outDir),
+    }
+  }
+
   const {
     strategies = 'generateSW',
     registerType = 'prompt',
@@ -185,22 +199,11 @@ function getViteConfiguration(
   } = options
 
   let assets = config.build.assets ?? '_astro/'
-  if (assets[0] === '/')
+  if (assets[0] === '/') {
     assets = assets.slice(1)
-  if (assets[assets.length - 1] !== '/')
+  }
+  if (assets[assets.length - 1] !== '/') {
     assets += '/'
-
-  const adapter = config.adapter?.name
-
-  if (adapter)
-    options.outDir = fileURLToPath(config.build.client)
-
-  if (options.pwaAssets) {
-    options.pwaAssets.integration = {
-      baseUrl: config.base ?? config.vite.base ?? '/',
-      publicDir: fileURLToPath(config.publicDir),
-      outDir: fileURLToPath(config.adapter?.name ? config.build.client : config.outDir),
-    }
   }
 
   if (strategies === 'generateSW') {
@@ -212,8 +215,9 @@ function getViteConfiguration(
       injectRegister,
     }
 
-    if (adapter)
-      useWorkbox.globDirectory = fileURLToPath(config.build.client)
+    if (adapter) {
+      useWorkbox.globDirectory = options.outDir
+    }
 
     // the user may want to disable offline support
     if (!('navigateFallback' in useWorkbox))
@@ -241,8 +245,9 @@ function getViteConfiguration(
 
   options.injectManifest = options.injectManifest ?? {}
 
-  if (adapter)
-    options.injectManifest.globDirectory = fileURLToPath(config.build.client)
+  if (adapter) {
+    options.injectManifest.globDirectory = options.outDir
+  }
 
   // Astro4/ Vite5 support: allow override dontCacheBustURLsMatching
   if (!('dontCacheBustURLsMatching' in options.injectManifest))
