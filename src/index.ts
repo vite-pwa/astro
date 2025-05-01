@@ -3,6 +3,7 @@ import type { Plugin } from 'vite'
 import type { VitePluginPWAAPI, VitePWAOptions } from 'vite-plugin-pwa'
 import type { ManifestTransform } from 'workbox-build'
 import { fileURLToPath } from 'node:url'
+import { version as VITE_VERSION } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 interface EnableManifestTransform {
@@ -39,6 +40,10 @@ export default function (options: PwaOptions = {}): AstroIntegration {
   const enableManifestTransform = (): EnableManifestTransform => {
     return ctx
   }
+
+  const version = VITE_VERSION.split('.').map(v => Number.parseInt(v))
+  const isVite6 = version?.length && !Number.isNaN(version[0]) && version[0] >= 6
+
   return {
     name: '@vite-pwa/astro-integration',
     hooks: {
@@ -59,10 +64,45 @@ export default function (options: PwaOptions = {}): AstroIntegration {
           enableManifestTransform,
         )
 
-        if (command === 'build')
-          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
-        else
+        if (isVite6) {
           plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
+          if (command === 'build')
+            plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
+
+          plugins.push({
+            name: 'vite-pwa:astro:build:plugin',
+            // @ts-expect-error using Vite 5, env. api missing
+            applyToEnvironment(env: any) {
+              return env.name === 'client'
+            },
+            configResolved(resolvedConfig) {
+              if (!resolvedConfig.build.ssr)
+                pwaPlugin = resolvedConfig.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
+            },
+            async generateBundle(_, bundle) {
+              const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
+              if (api) {
+                const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
+                if (pwaAssetsGenerator) {
+                  pwaAssetsGenerator.injectManifestIcons()
+                }
+                api.generateBundle(bundle, this)
+              }
+            },
+            async closeBundle() {
+              const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
+              const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
+              if (pwaAssetsGenerator)
+                await pwaAssetsGenerator.generate()
+            },
+          })
+        }
+        else {
+          if (command === 'build')
+            plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
+          else
+            plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
+        }
 
         updateConfig({
           vite: {
@@ -72,7 +112,7 @@ export default function (options: PwaOptions = {}): AstroIntegration {
         })
       },
       'astro:config:done': ({ config }) => {
-        if (ctx.preview)
+        if (ctx.preview || isVite6)
           return
 
         pwaPlugin = config.vite!.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')!
