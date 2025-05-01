@@ -66,36 +66,36 @@ export default function (options: PwaOptions = {}): AstroIntegration {
 
         if (isVite6) {
           plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
-          if (command === 'build')
+          if (command === 'build') {
             plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
-
-          plugins.push({
-            name: 'vite-pwa:astro:build:plugin',
-            // @ts-expect-error using Vite 5, env. api missing
-            applyToEnvironment(env: any) {
-              return env.name === 'client'
-            },
-            configResolved(resolvedConfig) {
-              if (!resolvedConfig.build.ssr)
-                pwaPlugin = resolvedConfig.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
-            },
-            async generateBundle(_, bundle) {
-              const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
-              if (api) {
-                const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
-                if (pwaAssetsGenerator) {
-                  pwaAssetsGenerator.injectManifestIcons()
+            plugins.push({
+              name: 'vite-pwa:astro:build:plugin',
+              // @ts-expect-error using Vite 5, env. api missing
+              applyToEnvironment(env: any) {
+                return env.name === 'client'
+              },
+              configResolved(resolvedConfig) {
+                if (!resolvedConfig.build.ssr)
+                  pwaPlugin = resolvedConfig.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
+              },
+              async generateBundle(_, bundle) {
+                const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
+                if (api) {
+                  const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
+                  if (pwaAssetsGenerator) {
+                    pwaAssetsGenerator.injectManifestIcons()
+                  }
+                  api.generateBundle(bundle, this)
                 }
-                api.generateBundle(bundle, this)
-              }
-            },
-            async closeBundle() {
-              const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
-              const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
-              if (pwaAssetsGenerator)
-                await pwaAssetsGenerator.generate()
-            },
-          })
+              },
+              async closeBundle() {
+                const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
+                const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
+                if (pwaAssetsGenerator)
+                  await pwaAssetsGenerator.generate()
+              },
+            })
+          }
         }
         else {
           if (command === 'build')
