@@ -212,8 +212,7 @@ function getViteConfiguration(
       injectRegister,
     }
 
-    // the user may want to disable offline support
-    if (adapter && !('globDirectory' in useWorkbox))
+    if (adapter)
       useWorkbox.globDirectory = fileURLToPath(config.build.client)
 
     // the user may want to disable offline support
@@ -241,8 +240,8 @@ function getViteConfiguration(
   }
 
   options.injectManifest = options.injectManifest ?? {}
-  // the user may want to disable offline support
-  if (adapter && !('globDirectory' in options.injectManifest))
+
+  if (adapter)
     options.injectManifest.globDirectory = fileURLToPath(config.build.client)
 
   // Astro4/ Vite5 support: allow override dontCacheBustURLsMatching
