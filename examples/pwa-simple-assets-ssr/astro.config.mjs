@@ -39,6 +39,7 @@ export default defineConfig({
         navigateFallback: '/',
         globPatterns: ['**/*.{css,js,html,svg,png,ico,txt}'],
         navigateFallbackAllowlist: [/^\/$/],
+        // fix workbox build error when using v7.3.0: missing `;` errors when building the service worker from the template
         runtimeCaching: [{
           urlPattern: ({ url, sameOrigin, request }) => sameOrigin && request.mode === 'navigate' && !url.pathname.match(/^\/$/),
           handler: 'NetworkFirst',
@@ -47,36 +48,47 @@ export default defineConfig({
             /* check the options in the workbox-build docs */
             matchOptions: {
               ignoreVary: true,
-              ignoreSearch: true,
+              // eslint-disable-next-line style/comma-dangle
+              ignoreSearch: true
             },
             cacheableResponse: {
-              statuses: [200],
+              // eslint-disable-next-line style/comma-dangle
+              statuses: [200]
             },
             expiration: {
-              maxEntries: 100,
+              // eslint-disable-next-line style/comma-dangle
+              maxEntries: 100
             },
             plugins: [{
               cachedResponseWillBeUsed: async (params) => {
                 // When handlerDidError is invoked, then we can prevent redirecting if there is an entry in the cache.
                 // To check the behavior, navigate to a product page, then disable the network and refresh the page.
-                params.state ??= {}
-                params.state.dontRedirect = params.cachedResponse
-                console.log(`[SW] cachedResponseWillBeUsed ${params.request.url}, ${params.state ? JSON.stringify(params.state) : ''}`)
+                // eslint-disable-next-line style/semi
+                params.state ??= {};
+                // eslint-disable-next-line style/semi
+                params.state.dontRedirect = params.cachedResponse;
+                // eslint-disable-next-line style/semi
+                console.log(`[SW] cachedResponseWillBeUsed ${params.request.url}, ${params.state ? JSON.stringify(params.state) : ''}`);
               },
               // This callback will be called when the fetch call fails.
               // Beware of the logic, will be also invoked if the server is down.
               handlerDidError: async ({ request, state, error }) => {
-                if (state?.dontRedirect)
-                  return state.dontRedirect
+                if (state?.dontRedirect) {
+                  // eslint-disable-next-line style/semi
+                  return state.dontRedirect;
+                }
 
-                console.log(`[SW] handlerDidError ${request.url}, ${state ? JSON.stringify(state) : ''}`)
+                // eslint-disable-next-line style/semi
+                console.log(`[SW] handlerDidError ${request.url}, ${state ? JSON.stringify(state) : ''}`);
                 return error && 'name' in error && error.name === 'no-response'
                   ? Response.redirect(
                       state.dontRedirect.url,
                       404,
                     )
-                  : undefined
-              },
+                  // eslint-disable-next-line style/semi
+                  : undefined;
+              // eslint-disable-next-line style/comma-dangle
+              }
             }],
           },
         }],

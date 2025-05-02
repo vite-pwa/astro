@@ -1,18 +1,8 @@
 import type { AstroConfig, AstroIntegration } from 'astro'
-import type { Plugin } from 'vite'
 import type { VitePluginPWAAPI, VitePWAOptions } from 'vite-plugin-pwa'
 import type { ManifestTransform } from 'workbox-build'
 import { fileURLToPath } from 'node:url'
-import { version as VITE_VERSION } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
-
-interface EnableManifestTransform {
-  preview: boolean
-  doBuild: boolean
-  scope: string
-  useDirectoryFormat: boolean
-  trailingSlash: 'never' | 'always' | 'ignore'
-}
 
 export interface PwaOptions extends Partial<VitePWAOptions> {
   experimental?: {
@@ -27,29 +17,35 @@ export interface PwaOptions extends Partial<VitePWAOptions> {
   }
 }
 
+interface AstroPWAContext {
+  api?: VitePluginPWAAPI
+  previewOrSync: boolean
+  doBuild: boolean
+  scope: string
+  useDirectoryFormat: boolean
+  trailingSlash: 'never' | 'always' | 'ignore'
+}
+
 export default function (options: PwaOptions = {}): AstroIntegration {
-  let pwaPlugin: Plugin | undefined
-  const ctx: EnableManifestTransform = {
-    preview: false,
+  const ctx: AstroPWAContext = {
+    api: undefined,
+    previewOrSync: false,
     doBuild: false,
     scope: '/',
     trailingSlash: 'ignore',
     useDirectoryFormat: true,
   }
 
-  const enableManifestTransform = (): EnableManifestTransform => {
+  const astroPWAContext = (): AstroPWAContext => {
     return ctx
   }
-
-  const version = VITE_VERSION.split('.').map(v => Number.parseInt(v))
-  const isVite6 = version?.length && !Number.isNaN(version[0]) && version[0] >= 6
 
   return {
     name: '@vite-pwa/astro-integration',
     hooks: {
       'astro:config:setup': ({ command, config, updateConfig }) => {
-        if (command === 'preview') {
-          ctx.preview = true
+        if (command === 'preview' || command === 'sync') {
+          ctx.previewOrSync = true
           return
         }
 
@@ -61,47 +57,45 @@ export default function (options: PwaOptions = {}): AstroIntegration {
           config,
           options,
           ctx.useDirectoryFormat,
-          enableManifestTransform,
+          astroPWAContext,
         )
 
-        if (isVite6) {
-          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
-          if (command === 'build') {
-            plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
-            plugins.push({
-              name: 'vite-pwa:astro:build:plugin',
-              // @ts-expect-error using Vite 5, env. api missing
-              applyToEnvironment(env: any) {
-                return env.name === 'client'
-              },
-              configResolved(resolvedConfig) {
-                if (!resolvedConfig.build.ssr)
-                  pwaPlugin = resolvedConfig.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
-              },
-              async generateBundle(_, bundle) {
-                const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
-                if (api) {
-                  const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
-                  if (pwaAssetsGenerator) {
-                    pwaAssetsGenerator.injectManifestIcons()
-                  }
-                  api.generateBundle(bundle, this)
+        plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
+        if (command === 'build') {
+          plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
+          plugins.push({
+            name: 'vite-pwa:astro:build:plugin',
+            // @ts-expect-error using Vite 5, env. api missing
+            applyToEnvironment(env: any) {
+              return env.name === 'client'
+            },
+            configResolved(resolvedConfig) {
+              // look up the PWA api from the client pipeline:
+              // this will prevent generating web manifest and registerSW in the server folder
+              if (!resolvedConfig.build.ssr)
+                ctx.api = resolvedConfig.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')?.api
+            },
+            async generateBundle(_, bundle) {
+              const api = ctx.api
+              if (api) {
+                const pwaAssetsGenerator = await api.pwaAssetsGenerator()
+                if (pwaAssetsGenerator) {
+                  pwaAssetsGenerator.injectManifestIcons()
                 }
-              },
-              async closeBundle() {
-                const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
+                api.generateBundle(bundle, this)
+              }
+            },
+            closeBundle: {
+              sequential: true,
+              order: 'post',
+              async handler() {
+                const api = ctx.api
                 const pwaAssetsGenerator = api && await api.pwaAssetsGenerator()
                 if (pwaAssetsGenerator)
                   await pwaAssetsGenerator.generate()
               },
-            })
-          }
-        }
-        else {
-          if (command === 'build')
-            plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:dev-sw')
-          else
-            plugins = plugins.filter(p => 'name' in p && p.name !== 'vite-plugin-pwa:build')
+            },
+          })
         }
 
         updateConfig({
@@ -111,26 +105,23 @@ export default function (options: PwaOptions = {}): AstroIntegration {
           },
         })
       },
-      'astro:config:done': ({ config }) => {
-        if (ctx.preview || isVite6)
-          return
-
-        pwaPlugin = config.vite!.plugins!.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')!
-      },
       'astro:build:done': async () => {
-        if (ctx.preview)
+        if (ctx.previewOrSync)
           return
 
         ctx.doBuild = true
-        await regeneratePWA(pwaPlugin)
+        const api = ctx.api
+        if (api && !api.disabled) {
+          await api.generateSW()
+        }
       },
     },
   }
 }
 
-function createManifestTransform(enableManifestTransform: () => EnableManifestTransform): ManifestTransform {
+function createManifestTransform(astroPWAContext: () => AstroPWAContext): ManifestTransform {
   return async (entries) => {
-    const { doBuild, trailingSlash, scope, useDirectoryFormat } = enableManifestTransform()
+    const { doBuild, trailingSlash, scope, useDirectoryFormat } = astroPWAContext()
     if (!doBuild)
       return { manifest: entries, warnings: [] }
 
@@ -156,9 +147,9 @@ function createManifestTransform(enableManifestTransform: () => EnableManifestTr
   }
 }
 
-function createExperimentalManifestTransform(enableManifestTransform: () => EnableManifestTransform): ManifestTransform {
+function createExperimentalManifestTransform(astroPWAContext: () => AstroPWAContext): ManifestTransform {
   return async (entries) => {
-    const { doBuild, trailingSlash, scope, useDirectoryFormat } = enableManifestTransform()
+    const { doBuild, trailingSlash, scope, useDirectoryFormat } = astroPWAContext()
     if (!doBuild)
       return { manifest: entries, warnings: [] }
 
@@ -206,7 +197,7 @@ function getViteConfiguration(
   config: AstroConfig,
   options: PwaOptions,
   directoryFormat: boolean,
-  enableManifestTransform: () => EnableManifestTransform,
+  astroPWAContext: () => AstroPWAContext,
 ) {
   // @ts-expect-error TS2589: Type instantiation is excessively deep and possibly infinite.
   const plugin = config.vite?.plugins?.flat(Number.POSITIVE_INFINITY).find(p => p.name === 'vite-plugin-pwa')
@@ -216,9 +207,9 @@ function getViteConfiguration(
   // icons are there when `astro:build:done` hook is called
   options.includeManifestIcons = false
 
-  const adapter = config.adapter?.name
+  const server = config.output === 'server'
 
-  if (adapter) {
+  if (server) {
     options.outDir = fileURLToPath(config.build.client)
   }
 
@@ -226,7 +217,7 @@ function getViteConfiguration(
     options.pwaAssets.integration = {
       baseUrl: config.base ?? config.vite.base ?? '/',
       publicDir: fileURLToPath(config.publicDir),
-      outDir: adapter ? options.outDir : fileURLToPath(config.outDir),
+      outDir: server ? options.outDir : fileURLToPath(config.outDir),
     }
   }
 
@@ -255,7 +246,7 @@ function getViteConfiguration(
       injectRegister,
     }
 
-    if (adapter) {
+    if (server) {
       useWorkbox.globDirectory = options.outDir
     }
 
@@ -275,8 +266,8 @@ function getViteConfiguration(
       newOptions.workbox.manifestTransforms = newOptions.workbox.manifestTransforms ?? []
       newOptions.workbox.manifestTransforms.push(
         options.experimental?.directoryAndTrailingSlashHandler === true
-          ? createExperimentalManifestTransform(enableManifestTransform)
-          : createManifestTransform(enableManifestTransform),
+          ? createExperimentalManifestTransform(astroPWAContext)
+          : createManifestTransform(astroPWAContext),
       )
     }
 
@@ -285,7 +276,7 @@ function getViteConfiguration(
 
   options.injectManifest = options.injectManifest ?? {}
 
-  if (adapter) {
+  if (server) {
     options.injectManifest.globDirectory = options.outDir
   }
 
@@ -297,18 +288,10 @@ function getViteConfiguration(
     options.injectManifest.manifestTransforms = options.injectManifest.manifestTransforms ?? []
     options.injectManifest.manifestTransforms.push(
       options.experimental?.directoryAndTrailingSlashHandler === true
-        ? createExperimentalManifestTransform(enableManifestTransform)
-        : createManifestTransform(enableManifestTransform),
+        ? createExperimentalManifestTransform(astroPWAContext)
+        : createManifestTransform(astroPWAContext),
     )
   }
 
   return VitePWA(options)
-}
-
-async function regeneratePWA(pwaPlugin: Plugin | undefined) {
-  const api: VitePluginPWAAPI | undefined = pwaPlugin?.api
-  if (api && !api.disabled) {
-    // regenerate the sw: there is no need to generate the webmanifest again
-    await api.generateSW()
-  }
 }
