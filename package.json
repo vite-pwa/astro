@@ -2,7 +2,7 @@
   "name": "@vite-pwa/astro",
   "type": "module",
   "version": "1.1.0",
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.18.2",
   "description": "Zero-config PWA for Astro",
   "author": "antfu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -38,13 +38,13 @@
     "build": "unbuild",
     "lint": "eslint .",
     "lint:fix": "nr lint --fix",
-    "prepublishOnly": "npm run build",
-    "release": "bumpp && npm publish"
+    "prepublishOnly": "pnpm build",
+    "release": "bumpp"
   },
   "peerDependencies": {
     "@vite-pwa/assets-generator": "^1.0.0",
     "astro": "^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0",
-    "vite-plugin-pwa": "^1.0.0"
+    "vite-plugin-pwa": "^1.1.0"
   },
   "peerDependenciesMeta": {
     "@vite-pwa/assets-generator": {
@@ -52,7 +52,7 @@
     }
   },
   "dependencies": {
-    "vite-plugin-pwa": "^1.0.0"
+    "vite-plugin-pwa": "^1.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
