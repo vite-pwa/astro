@@ -14,6 +14,6 @@
     "@astrojs/node": "^9.1.3",
     "@vite-pwa/astro": "workspace:*",
     "astro": "^5.0.9",
-    "workbox-window": "^7.3.0"
+    "workbox-window": "^7.4.0"
   }
 }
