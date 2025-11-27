@@ -44,7 +44,7 @@
   "peerDependencies": {
     "@vite-pwa/assets-generator": "^1.0.0",
     "astro": "^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0",
-    "vite-plugin-pwa": "^1.1.0"
+    "vite-plugin-pwa": "^1.2.0"
   },
   "peerDependenciesMeta": {
     "@vite-pwa/assets-generator": {
@@ -52,7 +52,7 @@
     }
   },
   "dependencies": {
-    "vite-plugin-pwa": "^1.1.0"
+    "vite-plugin-pwa": "^1.2.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
