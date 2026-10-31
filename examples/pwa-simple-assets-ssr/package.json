@@ -11,9 +11,10 @@
     "astro": "astro"
   },
   "devDependencies": {
-    "@astrojs/node": "^9.1.3",
+    "@astrojs/node": "catalog:utils",
     "@vite-pwa/astro": "workspace:*",
-    "astro": "^5.0.9",
-    "workbox-window": "^7.4.0"
+    "@vitejs/devtools": "catalog:utils",
+    "astro": "catalog:utils",
+    "vite-plugin-inspect": "catalog:utils"
   }
 }

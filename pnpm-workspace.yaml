@@ -1,6 +1,110 @@
+autoInstallPeers: true
+
+catalogMode: prefer
+
+dedupePeers: true
+
+ignoreWorkspaceRootCheck: true
+
+linkWorkspacePackages: true
+
+verifyDepsBeforeRun: install
+
+preferWorkspacePackages: true
+
+shamefullyHoist: true
+
+shellEmulator: true
+
+strictPeerDependencies: false
+
+trustPolicy: no-downgrade
+
 packages:
-  - examples/*
-ignoredBuiltDependencies:
-  - esbuild
-onlyBuiltDependencies:
-  - sharp
+  - examples/**
+
+overrides:
+  '@types/node': 'catalog:types'
+  chokidar: ^5.0.0
+  sharp: ^0.35.5
+  semver: ^7.8.5
+  why-is-node-running: 'catalog:utils'
+
+allowBuilds:
+  '@parcel/watcher': false
+  core-js: false
+  esbuild: false
+  sharp: true
+
+catalogs:
+  build:
+    tsdown: ^0.23.1
+  eslint:
+    '@antfu/eslint-config': ^9.5.1
+    eslint: ^10.13.0
+    eslint-plugin-antfu: ^3.2.3
+    eslint-plugin-astro: ^3.2.1
+  pwa:
+    '@unplugin-pwa/core': ^0.0.3
+    '@unplugin-pwa/inspector': ^0.0.3
+    '@unplugin-pwa/vite': ^0.0.3
+    '@vite-pwa/assets-generator': ^2.0.0
+    '@vite-pwa/workbox-build': ^8.0.13
+    '@vite-pwa/workbox-swkit': ^8.0.13
+    '@vite-pwa/workbox-window': ^8.0.13
+  types:
+    '@types/debug': ^4.1.13
+    '@types/node': 24.19.2
+  typescript:
+    typescript: ~6.0.3
+  utils:
+    '@antfu/ni': ^25.0.0
+    '@arethetypeswrong/core': ^0.18.5
+    '@astrojs/node': ^11.1.9
+    '@vitejs/devtools': ^0.7.6
+    astro: ^7.4.4
+    https-localhost: 4.7.2
+    magicast: ^0.5.5
+    publint: ^0.3.25
+    rolldown: ^1.2.14
+    taze: 21.1.0
+    vite: ^8.3.5
+    vite-plugin-inspect: ^12.1.0
+    why-is-node-running: 3.2.3
+  conflicts_utils_h5_0_9:
+    astro: ^5.0.9
+
+minimumReleaseAgeExclude:
+  - uppt
+  - vite
+  - astro
+  - '@astrojs/node'
+  - '@astrojs/compiler-binding-darwin-arm64'
+  - '@astrojs/compiler-binding-darwin-x64'
+  - '@astrojs/compiler-binding-linux-arm64-gnu'
+  - '@astrojs/compiler-binding-linux-arm64-musl'
+  - '@astrojs/compiler-binding-linux-x64-gnu'
+  - '@astrojs/compiler-binding-linux-x64-musl'
+  - '@astrojs/compiler-binding-wasm32-wasi'
+  - '@astrojs/compiler-binding-win32-arm64-msvc'
+  - '@astrojs/compiler-binding-win32-x64-msvc'
+  - '@astrojs/compiler-binding'
+  - '@astrojs/compiler-rs'
+  - '@unplugin-pwa/core'
+  - '@unplugin-pwa/inspector'
+  - '@unplugin-pwa/vite'
+  - '@vite-pwa/workbox-build'
+  - '@vite-pwa/workbox-swkit'
+  - '@vite-pwa/workbox-window'
+
+supportedArchitectures:
+  os:
+    - win32
+    - darwin
+    - current
+  cpu:
+    - x64
+    - arm64
+catalog:
+  '@astrojs/node': ^9.1.3
+  workbox-window: ^7.4.0
