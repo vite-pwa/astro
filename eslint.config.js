@@ -9,13 +9,11 @@ export default await antfu(
       '**/dev-dist/**',
       '**/node_modules/**',
       '**/.astro/**',
-      // TODO: check why README.md:L53 and CONTRIBUTING:L20 are failing
-      'README.md',
-      'CONTRIBUTING.md',
+      'pnpm-workspace.yaml',
     ],
   },
   {
-    files: ['**/*.md/*.*'],
+    files: ['**/*.md/**'],
     rules: {
       'ts/no-this-alias': 'off',
       'ts/no-unused-vars': 'off',
@@ -39,6 +37,13 @@ export default await antfu(
     rules: {
       'no-undef': 'off',
       'style/jsx-tag-spacing': 'off',
+    },
+  },
+  {
+    // it detects nested arrays wrongly
+    files: ['.github/labeler.yml'],
+    rules: {
+      'yaml/indent': 'off',
     },
   },
 )

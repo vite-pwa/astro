@@ -4,6 +4,4 @@ dist
 dev-dist
 # intellij stuff
 .idea/
-# routify
-.routify/
 .astro/

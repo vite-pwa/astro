@@ -3,8 +3,8 @@
   "compilerOptions": {
     "types": [
       "astro/client",
-      "vite-plugin-pwa/vanillajs",
-      "vite-plugin-pwa/info"
+      "@unplugin-pwa/core/vanillajs",
+      "@unplugin-pwa/core/info"
     ]
   }
 }

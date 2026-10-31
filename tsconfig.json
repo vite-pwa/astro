@@ -4,9 +4,10 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": [
-      "vite-plugin-pwa/vanillajs",
+      "@unplugin-pwa/core/vanillajs",
       "astro/client"
     ],
+    "allowImportingTsExtensions": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
