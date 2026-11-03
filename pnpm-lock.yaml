@@ -8,7 +8,7 @@ settings:
 catalogs:
   build:
     tsdown:
-      specifier: ^0.23.1
+      specifier: ^0.23.2
       version: 0.23.4
   eslint:
     '@antfu/eslint-config':
@@ -18,7 +18,7 @@ catalogs:
       specifier: ^10.13.0
       version: 10.13.0
     eslint-plugin-antfu:
-      specifier: ^3.2.3
+      specifier: ^3.3.1
       version: 3.3.1
     eslint-plugin-astro:
       specifier: ^3.2.1
