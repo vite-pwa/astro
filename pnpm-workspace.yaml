@@ -105,6 +105,4 @@ supportedArchitectures:
   cpu:
     - x64
     - arm64
-catalog:
-  '@astrojs/node': ^9.5.5
-  workbox-window: ^7.4.1
+
