@@ -104,7 +104,7 @@ export default defineConfig({
 })
 ```
 
-Read the [📖 documentation](https://unplugin-pwa.app/frameworks/astro) for a complete guide on how to configure and use
+Read the [📖 documentation](https://unplugin-pwa.netlify.app/frameworks/astro) for a complete guide on how to configure and use
 this plugin.
 
 ## ⚡️ Examples
