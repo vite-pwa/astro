@@ -90,6 +90,8 @@ export default defineConfig({
 })
 ```
 
+Read the [📖 v2.x documentation](https://unplugin-pwa.netlify.app/frameworks/astro) for a complete guide on how to configure and use this integration.
+
 ### v1.x (Legacy)
 
 If you are still using the `1.x` version, it used a default export:
@@ -104,8 +106,7 @@ export default defineConfig({
 })
 ```
 
-Read the [📖 documentation](https://unplugin-pwa.netlify.app/frameworks/astro) for a complete guide on how to configure and use
-this plugin.
+Read the [📖 v1.x documentation](https://vite-pwa-org.netlify.app/frameworks/astro) for a complete guide on how to configure and use this integration.
 
 ## ⚡️ Examples
 
