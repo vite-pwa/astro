@@ -38,20 +38,20 @@ allowBuilds:
 
 catalogs:
   build:
-    tsdown: ^0.23.2
+    tsdown: ^0.23.4
   eslint:
     '@antfu/eslint-config': ^9.5.1
-    eslint: ^10.13.0
+    eslint: ^10.14.0
     eslint-plugin-antfu: ^3.3.1
     eslint-plugin-astro: ^3.2.1
   pwa:
-    '@unplugin-pwa/core': ^0.0.4
-    '@unplugin-pwa/inspector': ^0.0.4
-    '@unplugin-pwa/vite': ^0.0.4
+    '@unplugin-pwa/core': ^0.0.5
+    '@unplugin-pwa/inspector': ^0.0.5
+    '@unplugin-pwa/vite': ^0.0.5
     '@vite-pwa/assets-generator': ^2.0.0
-    '@vite-pwa/workbox-build': ^8.0.14
-    '@vite-pwa/workbox-swkit': ^8.0.14
-    '@vite-pwa/workbox-window': ^8.0.14
+    '@vite-pwa/workbox-build': ^8.0.15
+    '@vite-pwa/workbox-swkit': ^8.0.15
+    '@vite-pwa/workbox-window': ^8.0.15
   types:
     '@types/debug': ^4.1.13
     '@types/node': 24.19.2
@@ -60,15 +60,15 @@ catalogs:
   utils:
     '@antfu/ni': ^25.0.0
     '@arethetypeswrong/core': ^0.18.5
-    '@astrojs/node': ^11.1.9
+    '@astrojs/node': ^11.1.11
     '@vitejs/devtools': ^0.7.6
-    astro: ^7.4.4
+    astro: ^7.4.7
     https-localhost: 4.7.2
     magicast: ^0.5.5
     publint: ^0.3.25
-    rolldown: ^1.2.15
+    rolldown: ^1.2.16
     taze: 21.1.0
-    vite: ^8.3.5
+    vite: ^8.3.7
     vite-plugin-inspect: ^12.1.0
     why-is-node-running: 3.2.3
   conflicts_utils_h5_0_9:
@@ -96,6 +96,22 @@ minimumReleaseAgeExclude:
   - '@vite-pwa/workbox-build'
   - '@vite-pwa/workbox-swkit'
   - '@vite-pwa/workbox-window'
+  - '@rolldown/binding-android-arm-eabi@1.2.18'
+  - '@rolldown/binding-android-arm64@1.2.18'
+  - '@rolldown/binding-darwin-arm64@1.2.18'
+  - '@rolldown/binding-darwin-x64@1.2.18'
+  - '@rolldown/binding-freebsd-x64@1.2.18'
+  - '@rolldown/binding-linux-arm-gnueabihf@1.2.18'
+  - '@rolldown/binding-linux-arm64-gnu@1.2.18'
+  - '@rolldown/binding-linux-arm64-musl@1.2.18'
+  - '@rolldown/binding-linux-ppc64-gnu@1.2.18'
+  - '@rolldown/binding-linux-s390x-gnu@1.2.18'
+  - '@rolldown/binding-linux-x64-gnu@1.2.18'
+  - '@rolldown/binding-linux-x64-musl@1.2.18'
+  - '@rolldown/binding-openharmony-arm64@1.2.18'
+  - '@rolldown/binding-win32-arm64-msvc@1.2.18'
+  - '@rolldown/binding-win32-x64-msvc@1.2.18'
+  - rolldown@1.2.18
 
 supportedArchitectures:
   os:
@@ -105,4 +121,3 @@ supportedArchitectures:
   cpu:
     - x64
     - arm64
-
