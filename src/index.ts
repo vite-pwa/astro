@@ -41,8 +41,10 @@ export function AstroPWAIntegration<
         ctx.astro.trailingSlash = config.trailingSlash
         ctx.astro.useDirectoryFormat = config.build.format === 'directory'
 
+        // @ts-expect-error TS2321: Excessive stack depth comparing types
         updateConfig({
           vite: {
+            // @ts-expect-error TS2322: Type PluginOption[] | PluginOption[] | undefined is not assignable to type DeepPartial<PluginOption[] | undefined>
             plugins: await import('./create-plugins.ts').then(({
               createPlugins,
             }) => createPlugins(ctx)),
