@@ -42,7 +42,7 @@ catalogs:
     tsdown: ^0.23.7
   eslint:
     '@antfu/eslint-config': ^9.5.1
-    eslint: ^10.14.0
+    eslint: ^10.15.0
     eslint-plugin-antfu: ^3.3.1
     eslint-plugin-astro: ^3.2.1
   pwa:
@@ -61,9 +61,9 @@ catalogs:
   utils:
     '@antfu/ni': ^25.0.0
     '@arethetypeswrong/core': ^0.18.5
-    '@astrojs/node': ^11.1.13
+    '@astrojs/node': ^11.1.14
     '@vitejs/devtools': ^0.7.6
-    astro: ^7.4.12
+    astro: ^7.4.13
     https-localhost: 4.7.2
     magicast: ^0.5.5
     publint: ^0.3.25
